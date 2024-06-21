@@ -20,6 +20,9 @@ public class Inet4NetworkParser {
 
 
     public static List<String> getNetworkIpList(String ip, int cidr) {
+        if (!(0 < cidr && cidr <= 32)) throw new RuntimeException("CIDR Range Exception");
+
+
         int net = ipToInt(ip) & netMask(cidr);
 
         List<String> result = new ArrayList<>();
@@ -31,12 +34,14 @@ public class Inet4NetworkParser {
     }
 
 
-    public static List<String> getNetworkIpListRange(String startIp, String endIp, int cidr){
+    public static List<String> getNetworkIpListRange(String startIp, String endIp, int cidr) {
+        if (!(0 < cidr && cidr <= 32)) throw new RuntimeException("CIDR Range Exception");
+
         int startIpNetMask = ipToInt(startIp) & netMask(cidr);
         int endIpNetMask = ipToInt(endIp) & netMask(cidr);
 
 
-        if(startIpNetMask != endIpNetMask){
+        if (startIpNetMask != endIpNetMask) {
             throw new RuntimeException("Different Network Exception");
         }
 
@@ -47,7 +52,7 @@ public class Inet4NetworkParser {
         int e = Math.max(sIp, eIp);
 
         List<String> result = new ArrayList<>();
-        for(int ip = s; ip <= e; ip++){
+        for (int ip = s; ip <= e; ip++) {
             result.add(intToInet4String(ip));
         }
 
@@ -114,16 +119,5 @@ public class Inet4NetworkParser {
         }
         return bytes;
     }
-
-
-
-
-    public static void main(String[] args) throws Exception {
-
-//        getNetworkIpList("192.168.10.0", 24).forEach(System.out::println);
-        getNetworkIpListRange("192.168.30.10", "192.168.10.30", 16).forEach(System.out::println);
-
-    }
-
 
 }
