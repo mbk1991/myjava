@@ -8,65 +8,122 @@ import java.util.List;
 public class Inet4NetworkParser {
 
     private static final int IPV4_LENTH = 32;
+    private static final int OCTET_LENGTH = 8;
     private static final String CIDR_SEPARATOR = "/";
     private static final String OCTET_SEPARATOR = ".";
+    private static final int[] OCTETS = {
+            0xFF_00_00_00,
+            0x00_FF_00_00,
+            0x00_00_FF_00,
+            0x00_00_00_FF
+    };
 
-    private enum OCTET {
-        A(0b11111111_00000000_00000000_00000000L),
-        B(0b00000000_11111111_00000000_00000000L),
-        C(0b00000000_00000000_11111111_00000000L),
-        D(0b00000000_00000000_00000000_11111111L);
-
-        OCTET(long mask) {
-            this.mask = mask;
-        }
-
-        private final long mask;
-    }
 
     public static List<String> getNetworkIpList(String ip, int cidr) {
-        long net = ipToLong(ip) & parseCidr(cidr);
+        int net = ipToInt(ip) & netMask(cidr);
 
         List<String> result = new ArrayList<>();
         for (int i = 0; i < setHostNum(cidr); i++) {
-            result.add(longToInetString(net + i));
+            result.add(intToInet4String(net + i));
         }
 
         return result;
     }
 
-    private static long ipToLong(String ip) {
+
+    public static List<String> getNetworkIpListRange(String startIp, String endIp, int cidr){
+        int startIpNetMask = ipToInt(startIp) & netMask(cidr);
+        int endIpNetMask = ipToInt(endIp) & netMask(cidr);
+
+
+        if(startIpNetMask != endIpNetMask){
+            throw new RuntimeException("Different Network Exception");
+        }
+
+        int sIp = ipToInt(startIp);
+        int eIp = ipToInt(endIp);
+
+        int s = Math.min(sIp, eIp);
+        int e = Math.max(sIp, eIp);
+
+        List<String> result = new ArrayList<>();
+        for(int ip = s; ip <= e; ip++){
+            result.add(intToInet4String(ip));
+        }
+
+        return result;
+    }
+
+
+    private static int ipToInt(String ip) {
         try {
             InetAddress inet = InetAddress.getByName(ip);
             byte[] bytes = inet.getAddress();
 
-            long result = 0L;
+            int result = 0;
             for (int i = 0; i < bytes.length; i++) {
-                result += (long) (bytes[i] & 0xFF) << (i + 1) * IPV4_LENTH / 4;
+                result += bytes[i] << ((3 - i) * OCTET_LENGTH) & OCTETS[i];
             }
+
             return result;
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static long parseCidr(int cidr) {
-        return 0xFF_FF_FF_FFL << (IPV4_LENTH - cidr);
+
+    private static int netMask(int cidr) {
+        return 0xFF_FF_FF_FF << (IPV4_LENTH - cidr);
     }
+
+
+    private static int hostMask(int cidr) {
+        return ~netMask(cidr);
+    }
+
 
     private static int setHostNum(int cidr) {
         return (int) Math.pow(2, IPV4_LENTH - cidr);
     }
 
-    private static String longToInetString(long ip) {
-        return new StringBuilder()
-                .append((byte) ((OCTET.A.mask & ip) >> 24) & 0xFF)
-                .append(OCTET_SEPARATOR)
-                .append((byte) ((OCTET.B.mask & ip) >> 16) & 0xFF)
-                .append(OCTET_SEPARATOR)
-                .append((byte) ((OCTET.C.mask & ip) >> 8) & 0xFF)
-                .append(OCTET_SEPARATOR)
-                .append((byte) (OCTET.D.mask & ip) & 0xFF)
-                .toString();
+
+    private static String intToInet4String(int ip) {
+
+        StringBuilder ipString = new StringBuilder();
+
+        int cnt = 3;
+        for (byte octet : intToInetBytes(ip)) {
+            ipString.append(octet & 0xFF);
+            if (cnt > 0) {
+                ipString.append(OCTET_SEPARATOR);
+                cnt--;
+            }
+        }
+
+        return ipString.toString();
     }
+
+
+    private static byte[] intToInetBytes(int ip) {
+        byte[] bytes = new byte[4];
+
+        for (int i = 0; i < bytes.length; i++) {
+
+            bytes[i] = (byte) ((ip & OCTETS[i]) >>> (OCTET_LENGTH * (3 - i)));
+
+        }
+        return bytes;
+    }
+
+
+
+
+    public static void main(String[] args) throws Exception {
+
+//        getNetworkIpList("192.168.10.0", 24).forEach(System.out::println);
+        getNetworkIpListRange("192.168.30.10", "192.168.10.30", 16).forEach(System.out::println);
+
+    }
+
+
 }
