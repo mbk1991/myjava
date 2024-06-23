@@ -1,6 +1,5 @@
 package modules.ipscan;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class Inet4NetworkParser {
 
     private static int ipToInt(String ip) {
         try {
-            InetAddress inet = Inet4Address.getByName(ip);
+            InetAddress inet = InetAddress.getByName(ip);
             byte[] bytes = inet.getAddress();
             int result = 0;
             for (int i = 0; i < bytes.length; i++) {
@@ -52,7 +51,9 @@ public class Inet4NetworkParser {
             }
             return result;
         } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Wrong IP address");
+        } catch (ArrayIndexOutOfBoundsException e){
+            throw new RuntimeException("Wrong IP address: IPv6 Not Supported");
         }
     }
 
