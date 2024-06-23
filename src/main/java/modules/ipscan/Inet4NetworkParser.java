@@ -43,8 +43,7 @@ public class Inet4NetworkParser {
 
     private static int ipToInt(String ip) {
         try {
-            InetAddress inet = InetAddress.getByName(ip);
-            byte[] bytes = inet.getAddress();
+            byte[] bytes = InetAddress.getByName(ip).getAddress();
             int result = 0;
             for (int i = 0; i < bytes.length; i++) {
                 result |= bytes[i] << ((3 - i) * OCTET_LENGTH) & OCTET_MASK[i];

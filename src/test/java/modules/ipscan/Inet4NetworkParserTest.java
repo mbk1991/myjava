@@ -33,9 +33,8 @@ class Inet4NetworkParserTest {
     @Test
     void ipToBytes_테스트() throws UnknownHostException {
         String ipv4Str = "192.168.0.100";
+        InetAddress.getByAddress(ipv4Str).getAddress()
 
-        String ipv6Str = "::1";
 
-        InetAddress addr = InetAddress.getByName(ipv6Str);
     }
 }
