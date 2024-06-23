@@ -21,7 +21,7 @@ public class Inet4NetworkParser {
         if (!(16 <= cidr && cidr <= 32)) throw new RuntimeException("CIDR Range Exception");
         int net = ipToInt(ip) & netMask(cidr);
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < hostNum(cidr); i++) {
+        for (int i = 1; i < hostNum(cidr)-1; i++) { //no network address and broadcast address
             result.add(intToInet4String(net + i));
         }
         return result;
