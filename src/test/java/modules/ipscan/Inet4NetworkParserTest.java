@@ -11,21 +11,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Inet4NetworkParserTest {
     @Test
-    void networkIpList_테스트(){
+    void networkIpList_테스트() {
         long s = System.currentTimeMillis();
-        Inet4NetworkParser.getNetworkIpList("192.168.0.100", 24).forEach(System.out::println);
-        System.out.println(System.currentTimeMillis()-s + "(ms)");
+        Inet4NetworkParser.getNetworkIpList("192.168.10.0", 24).forEach(System.out::println);
+        System.out.println(System.currentTimeMillis() - s + "(ms)");
     }
 
     @Test
-    void networkIpRangeList_테스트(){
+    void networkIpRangeList_테스트() {
         long s = System.currentTimeMillis();
-        Inet4NetworkParser.getNetworkIpListRange("192.168.0.12200", "192.168.10.90",21).forEach(System.out::println);
-        System.out.println(System.currentTimeMillis()-s + "(ms)");
+        Inet4NetworkParser.getNetworkIpListRange("192.168.0.109", "192.168.0.90", 24).forEach(System.out::println);
+        System.out.println(System.currentTimeMillis() - s + "(ms)");
     }
-    
+
     @Test
-    void binary_테스트(){
+    void binary_테스트() {
         int googleDNS = 0b00000100_00000100_00000100_00000100;
         System.out.println("googleDNS = " + googleDNS);
     }
@@ -35,7 +35,8 @@ class Inet4NetworkParserTest {
         String ipv4Str = "192.168.0.100";
         byte[] bytes = InetAddress.getByName(ipv4Str).getAddress();
 
-        System.out.println("bytes.length = " + bytes.length);;
+        System.out.println("bytes.length = " + bytes.length);
+        ;
         System.out.println(bytes[0]);  //192
         System.out.println(bytes[1]);  //168
         System.out.println(bytes[2]);  //0
@@ -43,15 +44,17 @@ class Inet4NetworkParserTest {
     }
 
     @Test
-    void shift_테스트(){
+    void shift_테스트() throws Exception {
 
-        byte a = 0b00000001;
-        int intA = a << 24;
+        int a = 0b00000001_00000000_00000000_00000000;
+        int intA = a;
         long longA = (long) a << 56;
-
 
         System.out.println(Integer.toBinaryString(intA));
         System.out.println(Long.toBinaryString(longA));
+
+        InetAddress byName = InetAddress.getByName("192.168.10.123");
+        System.out.println(byName.getHostName());
 
 
     }

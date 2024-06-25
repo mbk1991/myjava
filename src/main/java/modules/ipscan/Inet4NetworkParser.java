@@ -68,7 +68,7 @@ public class Inet4NetworkParser {
         return (int) Math.pow(2, IPV4_LENTH - cidr);
     }
 
-    private static String intToInet4String(int ip) {
+    private static String intToInet4String(int ip) { // => InetAddress 표준 라이브러리 기능으로 대체 가능
         StringBuilder ipString = new StringBuilder();
         int cnt = 3;
         for (byte octet : intToInetBytes(ip)) {
