@@ -1,7 +1,5 @@
 package modules.ipscan.data;
 
-import lombok.Getter;
-import lombok.Setter;
 
 public class HostStatus {
     private String ip;

@@ -81,6 +81,8 @@ public class SnmpUtil {
         return result;
     }
 
+
+
     private static CommunityTarget makeHeader(String ip, int version, String community, int retries, int timeout) {
         CommunityTarget header = new CommunityTarget();
         header.setCommunity(new OctetString(community));
@@ -94,6 +96,8 @@ public class SnmpUtil {
         }
         return header;
     }
+
+
 
     private static PDU makePdu(int[] oid, int method) {
         PDU pdu = new PDU();

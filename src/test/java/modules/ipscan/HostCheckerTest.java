@@ -43,8 +43,8 @@ class HostCheckerTest {
     void 프로비저닝_테스트() {
 
         long s = System.currentTimeMillis();
-
-        List<String> networkIpList = Inet4NetworkParser.getNetworkIpList("192.168.10.0", 24);
+        List<String> networkIpList = Inet4NetworkParser.getNetworkIpList("192.168.0.0", 24);
+//        List<String> networkIpList = Inet4NetworkParser.getNetworkIpListRange("192.168.10.200", "192.168.10.230", 24);
         List<HostStatus> hostStatusList = new ArrayList<>();
 
         for (String host : networkIpList) {
@@ -58,14 +58,14 @@ class HostCheckerTest {
             }
             hostStatusList.add(hostStatus);
         }
+        System.out.println("===========================================");
+        System.out.println("|\tIP |\tPing |\tSNMP |\tCommunity |");
         hostStatusList.forEach(
                 host->{
-                    System.out.println("host.getIp() = " + host.getIp());
-                    System.out.println("host.isReachable() = " + host.isReachable());
-                    System.out.println("host.isSuccessSnmp() = " + host.isSuccessSnmp());
-                    System.out.println("host.getSnmpCommunity() = " + host.getSnmpCommunity());
+                    System.out.printf("|\t%s |\t%b |\t%b |\t%s |\n", host.getIp(), host.isReachable(), host.isSuccessSnmp(), host.getSnmpCommunity());
                 }
         );
+        System.out.println("===========================================");
 
         System.out.println("(System.currentTimeMillis() - s = " + (System.currentTimeMillis() - s));
     }

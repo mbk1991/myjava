@@ -18,9 +18,6 @@ import java.net.Socket;
 import java.util.Optional;
 
 public class HostChecker {
-    private static final int SNMP_PORT = 161;
-    private static final int[] CHK_PORTS = {22, 80, 443, 161, 1521, 3306, 8080};
-
     public static boolean pingCheck(String host, int timeout) {
         try {
             return InetAddress.getByName(host).isReachable(timeout);

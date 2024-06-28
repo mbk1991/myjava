@@ -13,7 +13,7 @@ class Inet4NetworkParserTest {
     @Test
     void networkIpList_테스트() {
         long s = System.currentTimeMillis();
-        Inet4NetworkParser.getNetworkIpList("192.168.10.0", 24).forEach(System.out::println);
+        Inet4NetworkParser.getNetworkIpList("192.168.0.0", 24).forEach(System.out::println);
         System.out.println(System.currentTimeMillis() - s + "(ms)");
     }
 
