@@ -1,6 +1,7 @@
 package modules.snmp;
 
 import modules.snmp.data.SnmpValue;
+import modules.snmp.enums.SnmpVersion;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -20,7 +21,9 @@ import java.util.List;
 public class SnmpUtil {
     private static final int SNMP_PORT = 161;
 
-    public static String get(String ip, int version, String community, int[] oid, int retries, int timeout) {
+    public static <T> String get(String ip, int version, String community, T oid, int retries, int timeout) {
+        version = snmpVersionConverter(version);
+
         CommunityTarget header = makeHeader(ip, version, community, retries, timeout);
         PDU pdu = makePdu(oid, PDU.GET);
         Snmp snmp = null;
@@ -48,14 +51,25 @@ public class SnmpUtil {
     }
 
 
-    public static List<SnmpValue> snmpWalk(String ip, int version, String community, int[] oid, int retries, int timeout){
+    public static <T> List<SnmpValue> snmpWalk(String ip, int version, String community, T oid, int retries, int timeout){
+        version = snmpVersionConverter(version);
+
         CommunityTarget header = makeHeader(ip, version, community, retries, timeout);
         Snmp snmp = null;
         List<SnmpValue> result = new ArrayList<>();
         try {
             snmp = new Snmp(new DefaultUdpTransportMapping());
             snmp.listen();
-            List<TreeEvent> events = new TreeUtils(snmp, new DefaultPDUFactory()).getSubtree(header, new OID(oid));
+
+            List<TreeEvent> events;
+            if(oid instanceof int[]){
+                int[] oidVal = (int[]) oid;
+                events = new TreeUtils(snmp, new DefaultPDUFactory()).getSubtree(header, new OID(oidVal));
+            }else{
+                String oidVal = oid.toString();
+                events = new TreeUtils(snmp, new DefaultPDUFactory()).getSubtree(header, new OID(oidVal));
+            }
+
             if(events != null && !events.isEmpty()){
                 for(TreeEvent event:events){
                     VariableBinding[] variableBindings = event.getVariableBindings();
@@ -99,12 +113,27 @@ public class SnmpUtil {
 
 
 
-    private static PDU makePdu(int[] oid, int method) {
+    private static <T> PDU makePdu(T oid, int method) {
         PDU pdu = new PDU();
-        pdu.addOID(new VariableBinding(new OID(oid)));
         pdu.setType(method);
+
+        if(oid instanceof int[]){
+            int[] oidVal = (int[]) oid;
+            pdu.addOID(new VariableBinding(new OID(oidVal)));
+        }else{
+            String oidVal = oid.toString();
+            pdu.addOID(new VariableBinding(new OID(oidVal)));
+        }
         return pdu;
     }
 
+    private static int snmpVersionConverter(int version){
+        /*
+            input 2 => v2c
+            input 3 => v3
+        */
+        return version == 2? SnmpVersion.SNMP_VERSION_2C.value() : SnmpVersion.SNMP_VERSION_3.value();
+
+    }
 
 }
