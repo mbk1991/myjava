@@ -15,6 +15,14 @@ dependencies {
     implementation("org.snmp4j:snmp4j:2.5.0")
     compileOnly("org.projectlombok:lombok:1.18.12")
     annotationProcessor("org.projectlombok:lombok:1.18.12")
+    implementation("org.apache.commons:commons-csv:1.10.0")
+    implementation("hikari-cp:hikari-cp:1.8.1")
+    implementation("mysql:mysql-connector-java:5.1.42")
+
+
+
+
+
 
 }
 
