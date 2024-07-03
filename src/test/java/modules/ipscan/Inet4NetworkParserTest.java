@@ -54,8 +54,20 @@ class Inet4NetworkParserTest {
         System.out.println(Long.toBinaryString(longA));
 
         InetAddress byName = InetAddress.getByName("192.168.10.123");
-        System.out.println(byName.getHostName());
 
+    }
+
+    @Test
+    void startIp_테스트() throws Exception{
+
+        String startIp = Inet4NetworkParser.getStartIp("192.168.10.0", 21);
+        String endIp = Inet4NetworkParser.getEndIp("192.168.10.0", 21);
+
+        System.out.println("startIp = " + startIp);
+        System.out.println("endIp = " + endIp);
+
+        int beforeFirstIP = Inet4NetworkParser.isBeforeFirstIP(startIp, endIp);
+        System.out.println("beforeFirstIP = " + beforeFirstIP);
 
     }
 }

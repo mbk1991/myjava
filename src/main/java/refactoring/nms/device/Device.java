@@ -207,6 +207,34 @@ public class Device {
 
     public void setPortResource() {
         System.out.println("port 정보를 세팅합니다.");
+
+        List<SnmpValue> ifIndex = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_INDEX.oid(), 2, 1000);
+        List<SnmpValue> ifDescr = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_DESCR.oid(), 2, 1000);
+        List<SnmpValue> ifType = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_TYPE.oid(), 2, 1000);
+        List<SnmpValue> ifSpeed = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_SPEED.oid(), 2, 1000);
+        List<SnmpValue> ifPhysAddress = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_PHYS_ADDRESS.oid(), 2, 1000);
+        List<SnmpValue> ifAdminStatus = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_ADMIN_STATUS.oid(), 2, 1000);
+        List<SnmpValue> ifOperStatus = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_OPER_STATUS.oid(), 2, 1000);
+        List<SnmpValue> ifName = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_NAME.oid(), 2, 1000);
+        List<SnmpValue> ifHighSpeed = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_HIGH_SPEED.oid(), 2, 1000);
+        List<SnmpValue> ifAlias = SnmpUtil.snmpWalk(ifIp, version, community, ManagementMIB.IF_ALIAS.oid(), 2, 1000);
+
+
+
+
+
+
+
+        if(ifIndex.isEmpty()){
+
+        }else{
+
+
+
+        }
+
+
+
     }
 
     public void setIcmpResource() {

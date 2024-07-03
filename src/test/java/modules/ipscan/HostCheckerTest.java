@@ -43,7 +43,7 @@ class HostCheckerTest {
     void 프로비저닝_테스트() {
 
         long s = System.currentTimeMillis();
-        List<String> networkIpList = Inet4NetworkParser.getNetworkIpList("192.168.0.0", 24);
+        List<String> networkIpList = Inet4NetworkParser.getNetworkIpList("192.168.10.0", 24);
 //        List<String> networkIpList = Inet4NetworkParser.getNetworkIpListRange("192.168.10.200", "192.168.10.230", 24);
         List<HostStatus> hostStatusList = new ArrayList<>();
 
@@ -51,11 +51,11 @@ class HostCheckerTest {
             HostStatus hostStatus = new HostStatus();
             hostStatus.setIp(host);
             hostStatus.setReachable(HostChecker.pingCheck(host, 500));
-            Optional<String> settingedCommunity = HostChecker.snmpCheck(host, COMMINITYS);
-            if (settingedCommunity.isPresent()) {
-                hostStatus.setSuccessSnmp(true);
-                hostStatus.setSnmpCommunity(settingedCommunity.get());
-            }
+//            Optional<String> settingedCommunity = HostChecker.snmpCheck(host, COMMINITYS);
+//            if (settingedCommunity.isPresent()) {
+//                hostStatus.setSuccessSnmp(true);
+//                hostStatus.setSnmpCommunity(settingedCommunity.get());
+//            }
             hostStatusList.add(hostStatus);
         }
         System.out.println("===========================================");

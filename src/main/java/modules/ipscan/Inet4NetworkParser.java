@@ -41,6 +41,24 @@ public class Inet4NetworkParser {
         return result;
     }
 
+    public static String getStartIp(String ip, int cidr){
+        List<String> list = getNetworkIpList(ip, cidr);
+        return list.get(0);
+    }
+
+    public static String getEndIp(String ip, int cidr){
+        List<String> list = getNetworkIpList(ip, cidr);
+        return list.get(list.size()-1);
+    }
+
+    public static int isBeforeFirstIP(int ip1, int ip2){
+        return Integer.compareUnsigned(ip1, ip2);
+    }
+
+    public static int isBeforeFirstIP(String ip1, String ip2){
+        return Integer.compareUnsigned(ipToInt(ip1), ipToInt(ip2));
+    }
+
     private static int ipToInt(String ip) {
         try {
             byte[] bytes = InetAddress.getByName(ip).getAddress();
@@ -88,4 +106,5 @@ public class Inet4NetworkParser {
         }
         return bytes;
     }
+
 }
