@@ -13,17 +13,12 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.snmp4j:snmp4j:2.5.0")
-    compileOnly("org.projectlombok:lombok:1.18.12")
-    annotationProcessor("org.projectlombok:lombok:1.18.12")
+    compileOnly("org.projectlombok:lombok:1.16.0")
+    annotationProcessor("org.projectlombok:lombok:1.16.0")
     implementation("org.apache.commons:commons-csv:1.10.0")
-    implementation("hikari-cp:hikari-cp:1.8.1")
     implementation("mysql:mysql-connector-java:5.1.42")
-
-
-
-
-
-
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    testImplementation("ch.qos.logback:logback-classic:1.2.3")
 }
 
 tasks.test {
