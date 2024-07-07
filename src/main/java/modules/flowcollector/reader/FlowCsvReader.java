@@ -5,6 +5,9 @@ import modules.flowcollector.processor.FlowProcessor;
 import modules.flowcollector.writer.JdbcWriter;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +19,13 @@ import java.util.concurrent.Executors;
  **/
 public class FlowCsvReader {
 
+    private JdbcWriter writer;
     private FlowProcessor processor;
     private boolean hasProcessor;
+
+    public FlowCsvReader(JdbcWriter writer) {
+        this.writer = writer;
+    }
 
     public void setProcessor(FlowProcessor flowProcessor) {
         this.processor = processor;
@@ -95,17 +103,24 @@ public class FlowCsvReader {
                 throw new RuntimeException(e);
             }
             //file process, file move
+            
+            Path sPath = f.toPath();
+            String path = f.getPath();
+            String name = path.substring(path.lastIndexOf(File.separator));
+            Path dPath = Paths.get(path.replace(name, "/completed" + name));
+            try {
+                Files.move(sPath, dPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
 
         if (!buff.isEmpty()) {
             executorService.execute(new JdbcWriter(buff));
         }
-
-
         executorService.shutdown();
-
-
     }
 
 
@@ -177,6 +192,20 @@ public class FlowCsvReader {
             return false;
         }
         return true;
+    }
+
+
+    public static void main(String[] args) {
+        FlowProcessor flowProcessor;
+        JdbcWriter jdbcWriter = new JdbcWriter();
+        FlowCsvReader flowCsvReader = new FlowCsvReader(jdbcWriter);
+
+        String property = System.getProperty("user.dir");
+        String dirpath = property + "/file";
+
+        File[] files = flowCsvReader.readFilesInDirectory(dirpath);
+        flowCsvReader.readCsvFiles(files, 1_000, 10);
+
     }
 
 

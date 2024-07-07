@@ -18,6 +18,7 @@ public class ConnectionFactory {
 //        hikariConfig.setJdbcUrl(DBProperties.DB_URL);
 //        hikariConfig.setUsername(DBProperties.DB_USER);
 //        hikariConfig.setPassword(DBProperties.DB_PW);
+//    hikariConfig.setMinimumPoolSize(10);
 //        hikariConfig.setMaximumPoolSize(10);
 //        hikariDataSource = new HikariDataSource(hikariConfig);
 //    }
@@ -27,6 +28,7 @@ public class ConnectionFactory {
             Class.forName(DBProperties.DB_DRIVER);
             return DriverManager.getConnection(DBProperties.DB_URL, DBProperties.DB_USER, DBProperties.DB_PW);
         } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("exception");
             throw new RuntimeException(e);
         }
     }

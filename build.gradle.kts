@@ -18,7 +18,7 @@ dependencies {
     implementation("org.apache.commons:commons-csv:1.10.0")
     implementation("mysql:mysql-connector-java:5.1.42")
     implementation("com.zaxxer:HikariCP:4.0.3")
-    testImplementation("ch.qos.logback:logback-classic:1.2.3")
+    testImplementation("ch.qos.logback:logback-classic:1.3.1")
 }
 
 tasks.test {

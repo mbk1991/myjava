@@ -1,6 +1,8 @@
 package modules.flowcollector.db.jdbc;
 
 import codes.prop.DBProperties;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import modules.flowcollector.dao.Netflow;
 
 import java.io.File;
@@ -12,50 +14,72 @@ import java.util.List;
 
 public class FlowJdbc {
 
-//    private final String JDBC_DRIVER;
-//    private final String JDBC_URL;
-//    private final String JDBC_USER;
-//    private final String JDBC_PW;
+    private final String JDBC_DRIVER;
+    private final String JDBC_URL;
+    private final String JDBC_USER;
+    private final String JDBC_PW;
+
+    private HikariConfig hikariConfig;
+    private HikariDataSource hikariDataSource;
+
     private Connection con;
 
 
-    public FlowJdbc(Connection con){
-        this.con = con;
+//    public FlowJdbc(Connection con) {
+//        this.con = con;
+//    }
+
+    public FlowJdbc(boolean usePool) {
+        JDBC_DRIVER = DBProperties.DB_DRIVER;
+        JDBC_URL = DBProperties.DB_URL;
+        JDBC_USER = DBProperties.DB_USER;
+        JDBC_PW = DBProperties.DB_PW;
+
+
+        if (usePool) {
+            hikariConfig = new HikariConfig();
+            hikariConfig.setDriverClassName(JDBC_DRIVER);
+            hikariConfig.setJdbcUrl(JDBC_URL);
+            hikariConfig.setUsername(JDBC_USER);
+            hikariConfig.setPassword(JDBC_PW);
+            hikariDataSource = new HikariDataSource(hikariConfig);
+
+            getConnectionFromPool();
+        } else {
+            getConnection();
+        }
     }
 
 
-//    public FlowJdbc() {
-//        JDBC_DRIVER = DBProperties.DB_DRIVER;
-//        JDBC_URL = DBProperties.DB_URL;
-//        JDBC_USER = DBProperties.DB_USER;
-//        JDBC_PW = DBProperties.DB_PW;
-//        getConnection();
-//    }
-//
-//
-//    public void getConnection() {
-//        try {
-//            if (con == null) {
-//                Class.forName(JDBC_DRIVER).newInstance();
-//                con = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PW);
-//            }
-//        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public void getConnection() {
+        try {
+            if (con == null) {
+                Class.forName(JDBC_DRIVER).newInstance();
+                con = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PW);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void getConnectionFromPool() {
+        try {
+            if (con == null) {
+                con = hikariDataSource.getConnection();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
     public void clearConnection() throws SQLException {
-        if(!con.isClosed()){
+        if (!con.isClosed()) {
             con.close();
         }
     }
 
     public void insertNetflow(List<Netflow> l) {
-
-        System.out.println("insert Netflow");
-        System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
-
-
         String q = new StringBuilder()
                 .append("INSERT INTO NC_FLOW_RAW_FLOW_T ")
                 .append("(COLLECT_TIME, RA, SA, DA, SP, DP, PR, TS, TE, SAS,")

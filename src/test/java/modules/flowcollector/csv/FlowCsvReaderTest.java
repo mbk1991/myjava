@@ -2,6 +2,7 @@ package modules.flowcollector.csv;
 
 import modules.flowcollector.processor.FlowProcessor;
 import modules.flowcollector.reader.FlowCsvReader;
+import modules.flowcollector.writer.JdbcWriter;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -12,7 +13,9 @@ class FlowCsvReaderTest {
      void CsvRead_테스트(){
         FlowProcessor flowProcessor;
 
-        FlowCsvReader flowCsvReader = new FlowCsvReader();
+        JdbcWriter jdbcWriter = new JdbcWriter();
+
+        FlowCsvReader flowCsvReader = new FlowCsvReader(jdbcWriter);
 
         long s = System.currentTimeMillis();
 
@@ -21,7 +24,7 @@ class FlowCsvReaderTest {
         String dirpath = property + "/file";
 
         File[] files = flowCsvReader.readFilesInDirectory(dirpath);
-        flowCsvReader.readCsvFiles(files, 1_000, 10);
+        flowCsvReader.readCsvFiles(files, 1_000, 3);
 
 //        jdbcWriter.writeFlow(netflows);
 //        jdbcWriter.writeFlow( new File(dirpath).listFiles());
