@@ -103,15 +103,16 @@ public class FlowCsvReader {
                 throw new RuntimeException(e);
             }
             //file process, file move
-            
+
             Path sPath = f.toPath();
             String path = f.getPath();
             String name = path.substring(path.lastIndexOf(File.separator));
             Path dPath = Paths.get(path.replace(name, "/completed" + name));
             try {
+                Files.deleteIfExists(dPath);
                 Files.move(sPath, dPath);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
 
         }
